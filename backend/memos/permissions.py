@@ -27,10 +27,10 @@ class IsDirector(permissions.BasePermission):
 
 class IsRecipientOrInvolved(permissions.BasePermission):
     """
-    Permiso que permite ver memos APPROVED donde el usuario es recipient o author.
+    Permiso que permite ver memos APPROVED o DISTRIBUIDO donde el usuario es recipient o author.
     """
     def has_object_permission(self, request, view, obj):
-        if obj.status != 'APPROVED':
+        if obj.status not in ['APPROVED', 'DISTRIBUIDO']:
             return False
         return (
             request.user in obj.recipients.all() or
@@ -40,10 +40,10 @@ class IsRecipientOrInvolved(permissions.BasePermission):
 
 class CanEditDraft(permissions.BasePermission):
     """
-    Permiso que permite editar solo memos en estado DRAFT y solo si es el autor.
+    Permiso que permite editar solo memos en estado DRAFT o MODIFICACION_SOLICITADA y solo si es el autor.
     """
     def has_object_permission(self, request, view, obj):
-        if obj.status != 'DRAFT':
+        if obj.status not in ['DRAFT', 'MODIFICACION_SOLICITADA']:
             return False
         return request.user == obj.author
 

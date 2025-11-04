@@ -103,4 +103,44 @@ Puede acceder al memo desde el sistema.
                 [instance.approver.email],
                 fail_silently=True,
             )
+    
+    # Verificar si el estado cambió a DISTRIBUIDO
+    elif instance.status == 'DISTRIBUIDO' and old_status != 'DISTRIBUIDO':
+        # Notificar a los recipients
+        recipients = instance.recipients.all()
+        if recipients:
+            subject = f'Nuevo Memorando Recibido: {instance.subject}'
+            message = f'''
+Has recibido un nuevo memorando:
+
+Número: {instance.numero_correlativo or "N/A"}
+Asunto: {instance.subject}
+Remitente: {instance.author.nombre_completo or instance.author.username}
+Departamento: {instance.departamento.nombre if instance.departamento else "N/A"}
+
+Puede acceder al memorando desde el sistema.
+            '''
+            
+            recipient_emails = [r.email for r in recipients if r.email]
+            if recipient_emails:
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL or 'noreply@example.com',
+                    recipient_emails,
+                    fail_silently=True,
+                )
+    
+    # Verificar si el estado cambió a MODIFICACION_SOLICITADA
+    elif instance.status == 'MODIFICACION_SOLICITADA' and old_status != 'MODIFICACION_SOLICITADA':
+        # Notificar al autor
+        if instance.author.email:
+            comentarios = instance.modificacion_solicitada or 'Sin comentarios específicos'
+            send_mail(
+                f'Modificaciones solicitadas en su memo: {instance.subject}',
+                f'Su memo "{instance.subject}" requiere modificaciones.\n\nComentarios:\n{comentarios}\n\nEl memo ha sido retornado a borrador para que pueda realizar los cambios necesarios.',
+                settings.DEFAULT_FROM_EMAIL or 'noreply@example.com',
+                [instance.author.email],
+                fail_silently=True,
+            )
 
