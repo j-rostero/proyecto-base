@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { AuthProvider } from '@/lib/store';
 
 export const metadata: Metadata = {
-  title: 'Dashboard App',
-  description: 'Aplicación con autenticación y dashboard',
+  title: 'Sistema de Memorándums',
+  description: 'Sistema de gestión de memorándums internos',
 };
 
 export default function RootLayout({
@@ -13,7 +14,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+      </body>
     </html>
   );
 }

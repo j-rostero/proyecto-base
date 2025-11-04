@@ -1,0 +1,11 @@
+from django.apps import AppConfig
+
+
+class MemosConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'memos'
+    verbose_name = 'Memorándums'
+    
+    def ready(self):
+        import memos.signals  # noqa
+

@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'accounts',
+    'memos',
 ]
 
 MIDDLEWARE = [
@@ -88,6 +89,11 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -126,4 +132,8 @@ CORS_ALLOW_CREDENTIALS = True
 # Permitir todos los orígenes en desarrollo (solo para desarrollo)
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
+
+# Configuración de email (para notificaciones)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@memos.local')
 

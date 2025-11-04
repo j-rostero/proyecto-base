@@ -2,11 +2,14 @@
 
 import { useState, FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { authService } from '@/lib/auth';
+import { useAuthStore } from '@/lib/store';
 import styles from './login.module.css';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setUser } = useAuthStore();
   const [username, setUsername] = useState('testuser');
   const [password, setPassword] = useState('testpass123');
   const [error, setError] = useState('');
@@ -26,7 +29,9 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      await authService.login(username, password);
+      const { user } = await authService.login(username, password);
+      // Actualizar el store
+      setUser(user);
       router.push('/dashboard');
     } catch (err: any) {
       console.error('Error en login:', err);
@@ -146,6 +151,34 @@ export default function LoginPage() {
           >
             {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </button>
+
+          <div style={{ 
+            textAlign: 'center', 
+            marginTop: '20px', 
+            fontSize: '14px', 
+            color: '#666' 
+          }}>
+            ¿No tienes una cuenta?{' '}
+            <Link 
+              href="/register" 
+              style={{
+                color: '#667eea',
+                textDecoration: 'none',
+                fontWeight: '500',
+                transition: 'color 0.2s'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.color = '#5568d3';
+                e.currentTarget.style.textDecoration = 'underline';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.color = '#667eea';
+                e.currentTarget.style.textDecoration = 'none';
+              }}
+            >
+              Regístrate aquí
+            </Link>
+          </div>
         </form>
       </div>
     </div>
