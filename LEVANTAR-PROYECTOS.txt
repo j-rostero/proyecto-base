@@ -1,0 +1,46 @@
+==========================================
+COMANDOS PARA LEVANTAR LOS PROYECTOS
+==========================================
+
+TERMINAL 1 - BACKEND DJANGO:
+----------------------------
+cd /var/www/memos/backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+echo "SECRET_KEY=django-insecure-dev-key-change-in-production" > .env
+echo "DEBUG=True" >> .env
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+
+TERMINAL 2 - FRONTEND NEXT.JS:
+-------------------------------
+cd /var/www/memos/frontend
+npm install
+echo "NEXT_PUBLIC_API_URL=http://localhost:8000/api" > .env.local
+npm run dev
+
+==========================================
+URLs:
+- Backend: http://localhost:8000
+- Frontend: http://localhost:3000
+- Admin Django: http://localhost:8000/admin
+==========================================
+
+CREAR USUARIO DE PRUEBA:
+------------------------
+cd /var/www/memos/backend
+source venv/bin/activate
+python manage.py create_test_user
+
+Esto creará un usuario con:
+  Usuario: testuser
+  Contraseña: testpass123
+  Email: test@example.com
+
+Para crear un superusuario (opcional):
+cd /var/www/memos/backend
+source venv/bin/activate
+python manage.py createsuperuser
+
